@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моніторинг якості повітря (WAQI)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <i class="fas fa-leaf header-icon"></i>
+            <h1>Моніторинг якості повітря</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="title-bar">
+            <div>
+                <h2>Моніторинг якості повітря</h2>
+                <p>Дані з World Air Quality Index (WAQI Project)</p>
+            </div>
+            <a href="{{ url_for('refresh_all_data') }}" class="refresh-all-btn">
+                <i class="fas fa-sync-alt"></i> Оновити всі дані
+            </a>
+        </div>
+
+        {% if alerts %}
+        <section class="alerts-section">
+            <h3><i class="fas fa-exclamation-triangle"></i> Активні сповіщення</h3>
+            <div class="alerts-grid">
+                {% for alert in alerts %}
+                <div class="alert-card">
+                    <p><strong><i class="fas fa-triangle-exclamation"></i> {{ alert.station_name }}</strong></p>
+                    <p>{{ alert.message }}</p>
+                    <p class="timestamp">Час даних: {{ alert.timestamp }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="stations-grid">
+            {% for station in stations %}
+            <div class="station-card">
+                {% if station.error %}
+                    <div class="station-header">
+                        <h4>{{ station.name }}</h4>
+                        <p class="location">{{ station.location }}</p>
+                    </div>
+                    <p class="error-message">{{ station.error }}</p>
+                {% else %}
+                    <div class="station-header">
+                        <div>
+                            <h4>{{ station.name }}</h4>
+                            <p class="location">{{ station.location }}</p>
+                        </div>
+                    </div>
+                    <div class="aqi-display">
+                        <div class="aqi-value-circle {{ station.color_class }}">
+                            <span>{{ station.aqi if station.aqi is not none else 'N/A' }}</span>
+                        </div>
+                        <p class="aqi-category {{ station.color_class }}">{{ station.category }}</p>
+                        <p class="index-label">Індекс якості повітря (AQI)</p>
+                    </div>
+                    <div class="pollutants-grid">
+                        <div class="pollutant-item {% if station.pm2_5 is not none and station.pm2_5 > 55 %}unhealthy-bar {% elif station.pm2_5 is not none and station.pm2_5 > 35 %}unhealthy-sensitive-bar {% elif station.pm2_5 is not none and station.pm2_5 > 12 %}moderate-bar {% elif station.pm2_5 is not none %}good-bar {% else %}unknown-bar {% endif %}">
+                            <span class="pollutant-name">PM2.5</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.pm2_5) if station.pm2_5 is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">µg/m³</span>
+                        </div>
+                        <div class="pollutant-item {% if station.pm10 is not none and station.pm10 > 150 %}unhealthy-bar {% elif station.pm10 is not none and station.pm10 > 100 %}unhealthy-sensitive-bar {% elif station.pm10 is not none and station.pm10 > 50 %}moderate-bar {% elif station.pm10 is not none %}good-bar {% else %}unknown-bar {% endif %}">
+                            <span class="pollutant-name">PM10</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.pm10) if station.pm10 is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">µg/m³</span>
+                        </div>
+                         <div class="pollutant-item {% if station.o3 is not none and station.o3 > 160 %}unhealthy-bar {% elif station.o3 is not none and station.o3 > 100 %}moderate-bar {% elif station.o3 is not none %}good-bar {% else %}unknown-bar {% endif %}">
+                            <span class="pollutant-name">O₃</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.o3) if station.o3 is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">µg/m³</span> <!-- WAQI зазвичай надає O3 в ppb, але конвертує в AQI індекс. Тут ми беремо iaqi.o3.v, яке може бути ppb або іншим. Уточнити! -->
+                        </div>
+                         <div class="pollutant-item {% if station.no2 is not none and station.no2 > 200 %}unhealthy-bar {% elif station.no2 is not none and station.no2 > 100 %}moderate-bar {% elif station.no2 is not none %}good-bar {% else %}unknown-bar {% endif %}">
+                            <span class="pollutant-name">NO₂</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.no2) if station.no2 is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">µg/m³</span> <!-- Аналогічно O3, перевірити одиниці -->
+                        </div>
+                        <div class="pollutant-item {% if station.so2 is not none and station.so2 > 350 %}unhealthy-bar {% elif station.so2 is not none and station.so2 > 125 %}moderate-bar {% elif station.so2 is not none %}good-bar {% else %}unknown-bar {% endif %}">
+                            <span class="pollutant-name">SO₂</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.so2) if station.so2 is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">µg/m³</span> <!-- Аналогічно O3, перевірити одиниці -->
+                        </div>
+                        <div class="pollutant-item {% if station.co is not none and station.co > 9 %}moderate-bar {% elif station.co is not none %}good-bar {% else %}unknown-bar {% endif %}"> <!-- CO часто в ppm або індексі, поріг 9 ppm для 8-годинного середнього -->
+                            <span class="pollutant-name">CO</span>
+                            <span class="pollutant-value">{{ "%.1f"|format(station.co) if station.co is not none else 'N/A' }}</span>
+                            <span class="pollutant-unit">індекс/ppm</span> <!-- WAQI iaqi.co.v - це індекс. Якщо потрібні ppm, треба шукати окремо. -->
+                        </div>
+                    </div>
+                    <p class="timestamp">Час даних: {{ station.timestamp }} <br> (Оновлено в БД: {{station.db_timestamp}})</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+    </main>
+
+    <footer>
+        <p>© {{ g.current_year }} Моніторинг якості повітря. Дані надано <a href="https://waqi.info/" target="_blank">WAQI Project</a>.</p>
+    </footer>
+</body>
+</html>

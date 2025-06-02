@@ -1,0 +1,411 @@
+/* --- Global Resets and Base Styles --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-secondary: 'Roboto', sans-serif; /* Додайте, якщо хочете інший шрифт для заголовків */
+
+    --color-background: #f8f9fa; /* Дуже світло-сірий */
+    --color-surface: #ffffff;   /* Білий для карток */
+    --color-text-primary: #212529; /* Темно-сірий, майже чорний */
+    --color-text-secondary: #6c757d; /* Сірий */
+    --color-text-accent: #198754; /* Основний зелений */
+
+    --color-header-bg: #198754; /* Зелений як на скріншоті */
+    --color-header-text: #ffffff;
+
+    --color-alert-bg: #fff3cd;
+    --color-alert-border: #ffeeba;
+    --color-alert-text: #664d03;
+    --color-alert-accent: #ffc107; /* Жовтий для акценту сповіщень */
+
+    --border-radius-sm: 0.25rem; /* 4px */
+    --border-radius-md: 0.5rem;  /* 8px */
+    --box-shadow-light: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --box-shadow-medium: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+
+    /* AQI Colors (можна уточнити) */
+    --aqi-good-bg: #d4edda; --aqi-good-text: #155724; --aqi-good-border: #c3e6cb;
+    --aqi-moderate-bg: #fff3cd; --aqi-moderate-text: #856404; --aqi-moderate-border: #ffeeba;
+    --aqi-usg-bg: #f8d7da; --aqi-usg-text: #d9534f; --aqi-usg-border: #f5c6cb; /* Unhealthy for Sensitive Groups */
+    --aqi-unhealthy-bg: #f5c6cb; --aqi-unhealthy-text: #721c24; --aqi-unhealthy-border: #f1b0b7;
+    --aqi-very-unhealthy-bg: #e9ecef; --aqi-very-unhealthy-text: #6c757d; --aqi-very-unhealthy-border: #d6d8db; /* Приклад, підберіть кольори */
+    --aqi-hazardous-bg: #dc3545; --aqi-hazardous-text: #ffffff; --aqi-hazardous-border: #dc3545;
+    --aqi-unknown-bg: #e9ecef; --aqi-unknown-text: #495057; --aqi-unknown-border: #ced4da;
+
+    /* Circle AQI colors (як на вашому скріншоті, яскравіші) */
+    --circle-good: #2ecc71;
+    --circle-moderate: #f1c40f;
+    --circle-usg: #e67e22; /* Помаранчевий для Unhealthy Sensitive */
+    --circle-unhealthy: #e74c3c;
+    --circle-very-unhealthy: #9b59b6;
+    --circle-hazardous: #6b273f; /* Темно-бордовий */
+    --circle-unknown: #bdc3c7;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    width: 90%;
+    max-width: 1320px; /* Трохи ширше */
+    margin: 0 auto;
+    padding: 2rem 1rem; /* Більше відступів */
+}
+
+/* --- Header --- */
+header {
+    background-color: var(--color-header-bg);
+    color: var(--color-header-text);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow-light);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-icon {
+    font-size: 1.75em;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+/* --- Title Bar --- */
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem; /* Більше відступу */
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.title-bar h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.title-bar p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.95em;
+    color: var(--color-text-secondary);
+}
+
+.refresh-all-btn {
+    background-color: var(--color-surface);
+    color: var(--color-text-accent);
+    border: 1px solid var(--color-text-accent);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.refresh-all-btn:hover {
+    background-color: var(--color-text-accent);
+    color: var(--color-surface);
+}
+
+/* --- Alerts Section --- */
+.alerts-section {
+    margin-bottom: 2.5rem;
+}
+
+.alerts-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.alerts-section h3 i {
+    color: var(--color-alert-accent);
+}
+
+.alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.alert-card {
+    background-color: var(--color-alert-bg);
+    border: 1px solid var(--color-alert-border);
+    border-left: 5px solid var(--color-alert-accent);
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--box-shadow-light);
+    color: var(--color-alert-text);
+}
+
+.alert-card p {
+    margin: 0.3rem 0;
+    font-size: 0.95em;
+}
+.alert-card strong {
+    font-weight: 600;
+}
+.alert-card strong i {
+    margin-right: 0.3em;
+}
+.alert-card .timestamp {
+    font-size: 0.8em;
+    color: var(--color-text-secondary);
+    margin-top: 0.5rem;
+    opacity: 0.8;
+}
+
+/* --- Stations Grid --- */
+.stations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); /* Трохи ширші картки */
+    gap: 2rem; /* Більший відступ між картками */
+}
+
+.station-card {
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--box-shadow-medium);
+    padding: 1.5rem; /* Більше внутрішнього відступу */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.station-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.12);
+}
+
+.station-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.station-header h4 {
+    margin: 0;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.station-header .location {
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+    margin-top: 0.15rem;
+}
+
+/* AQI Display Block */
+.aqi-display {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee; /* Розділювач */
+}
+
+.aqi-value-circle {
+    width: 90px; /* Збільшено */
+    height: 90px; /* Збільшено */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 0.75rem auto;
+    font-size: 2.2em; /* Збільшено */
+    font-weight: 700;
+    color: white; /* Текст завжди білий */
+    border-width: 4px; /* Товщина рамки */
+    border-style: solid;
+}
+
+/* AQI Circle Colors - використовуємо CSS змінні */
+.aqi-value-circle.good { background-color: var(--circle-good); border-color: var(--circle-good); }
+.aqi-value-circle.moderate { background-color: var(--circle-moderate); border-color: var(--circle-moderate); }
+.aqi-value-circle.unhealthy-sensitive { background-color: var(--circle-usg); border-color: var(--circle-usg); }
+.aqi-value-circle.unhealthy { background-color: var(--circle-unhealthy); border-color: var(--circle-unhealthy); }
+.aqi-value-circle.very-unhealthy { background-color: var(--circle-very-unhealthy); border-color: var(--circle-very-unhealthy); }
+.aqi-value-circle.hazardous { background-color: var(--circle-hazardous); border-color: var(--circle-hazardous); }
+.aqi-value-circle.unknown { background-color: var(--circle-unknown); border-color: var(--circle-unknown); }
+
+.aqi-category {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+/* Колір тексту категорії AQI */
+.aqi-category.good { color: var(--circle-good); }
+.aqi-category.moderate { color: var(--circle-moderate); }
+.aqi-category.unhealthy-sensitive { color: var(--circle-usg); }
+.aqi-category.unhealthy { color: var(--circle-unhealthy); }
+.aqi-category.very-unhealthy { color: var(--circle-very-unhealthy); }
+.aqi-category.hazardous { color: var(--circle-hazardous); }
+.aqi-category.unknown { color: var(--circle-unknown); }
+
+
+.index-label {
+    font-size: 0.85em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Pollutants Grid Block */
+.pollutants-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem; /* Зменшено для компактності всередині блоку */
+    margin-bottom: 1.5rem;
+}
+
+.pollutant-item {
+    background-color: #f8f9fa; /* Дуже світлий фон для кожного показника */
+    padding: 0.75rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+    /* border-left: 4px solid #ccc;  Замінимо на зміну кольору значення */
+}
+.pollutant-item:nth-child(odd) { /* Можна додати зебру, якщо потрібно */
+    /* background-color: #f1f3f5; */
+}
+
+.pollutant-name {
+    font-size: 0.8em;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.pollutant-value {
+    font-size: 1.4em; /* Збільшено */
+    font-weight: 600;
+    color: var(--color-text-primary); /* За замовчуванням */
+}
+
+.pollutant-unit {
+    font-size: 0.75em;
+    color: var(--color-text-secondary);
+    margin-left: 0.2em;
+}
+
+/* Кольорове кодування для значень забруднювачів */
+.pollutant-item.good-bar .pollutant-value { color: var(--circle-good); }
+.pollutant-item.moderate-bar .pollutant-value { color: var(--circle-moderate); }
+.pollutant-item.unhealthy-sensitive-bar .pollutant-value { color: var(--circle-usg); }
+.pollutant-item.unhealthy-bar .pollutant-value { color: var(--circle-unhealthy); }
+.pollutant-item.very-unhealthy-bar .pollutant-value { color: var(--circle-very-unhealthy); }
+.pollutant-item.hazardous-bar .pollutant-value { color: var(--circle-hazardous); }
+.pollutant-item.unknown-bar .pollutant-value { color: var(--circle-unknown); }
+
+
+.timestamp {
+    font-size: 0.8em;
+    color: var(--color-text-secondary);
+    text-align: right;
+    margin-top: auto; /* Притискає донизу, якщо картка має фіксовану висоту або flex */
+    padding-top: 0.5rem;
+    border-top: 1px solid #eee;
+    opacity: 0.9;
+}
+.timestamp br {
+    display: block; /* Щоб <br> працював надійніше */
+    margin-bottom: 0.2em;
+}
+
+
+.error-message {
+    color: var(--aqi-unhealthy-text);
+    font-weight: 500;
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--aqi-unhealthy-bg);
+    border: 1px solid var(--aqi-unhealthy-border);
+    border-radius: var(--border-radius-md);
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: #e9ecef; /* Трохи темніший фон для футера */
+    color: var(--color-text-secondary);
+    font-size: 0.9em;
+    margin-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+footer a {
+    color: var(--color-text-accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 1.5rem 0.5rem;
+    }
+    .title-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .stations-grid {
+        grid-template-columns: 1fr; /* Один стовпець на менших екранах */
+    }
+    .pollutants-grid {
+        grid-template-columns: 1fr; /* Показники також в один стовпець для вузьких карток */
+    }
+    header h1 {
+        font-size: 1.2em;
+    }
+    .title-bar h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content { gap: 0.5rem; }
+    .header-icon { font-size: 1.5em; }
+    header h1 { font-size: 1.1em; }
+    .aqi-value-circle { width: 80px; height: 80px; font-size: 2em; }
+    .pollutant-value { font-size: 1.3em; }
+    .station-card { padding: 1rem; }
+}
